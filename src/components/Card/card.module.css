@@ -1,14 +1,61 @@
 .card {
 }
 
+.imageContainer {
+  position: relative;
+}
+
+.price {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.likesContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  bottom: 0;
+  right: 0;
+  margin: 12px;
+}
+
 .information {
+  border: 1px solid #d3d3d3;
+  padding: 18px;
 }
 .title {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 24px;
+  text-align: center;
+  vertical-align: middle;
+
+  text-overflow: ellipsis;
+
+  /* Needed to make it work */
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .subtitle {
+  text-align: center;
+  padding-top: 6px;
+}
+
+.by {
+  color: #c2c2bd;
+}
+
+.author {
 }
 
 .picture {
   width: 100%;
+  --mask: linear-gradient(135deg, #0000 42.43px, #000 0);
+  -webkit-mask: var(--mask);
+  mask: var(--mask);
+
+  vertical-align: top; /* remove blank space at the bottom of the image */
 }

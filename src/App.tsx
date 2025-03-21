@@ -19,7 +19,7 @@ function App() {
       <GridLayout
         className={styles.gridLayout}
         elements={filteredImages.map(({ node }: { node: ImageData }) => (
-          <Card imageData={node} />
+          <Card key={node.id} imageData={node} />
         ))}
       />
     </>
