@@ -7,3 +7,9 @@ export interface ImageData {
   likesCount: number;
   author: string;
 }
+
+export interface ImagesResponseType {
+  images: {
+    edges: { node: ImageData }[];
+  };
+}

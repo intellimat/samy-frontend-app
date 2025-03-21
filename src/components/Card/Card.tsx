@@ -1,24 +1,13 @@
+import { ImageData } from "../../types";
 import styles from "./card.module.css";
 import React from "react";
 
 interface Props {
-  id: string;
-  title: string;
-  price: number;
-  picture: string;
-  liked: boolean;
-  likesCount: number;
-  author: string;
+  imageData: ImageData;
 }
 
-const Card: React.FC<Props> = ({
-  title,
-  price,
-  author,
-  picture,
-  liked,
-  likesCount,
-}) => {
+const Card: React.FC<Props> = ({ imageData }) => {
+  const { title, price, author, picture, liked, likesCount } = imageData;
   return (
     <div className={styles.card}>
       <img src={picture} className={styles.picture} alt={title + " image"} />

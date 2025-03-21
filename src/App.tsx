@@ -1,28 +1,27 @@
 import { useQuery } from "@apollo/client";
 import styles from "./App.module.css";
 import { GET_IMAGES } from "./services/queries";
-import { ImageData } from "./types";
+import { ImageData, ImagesResponseType } from "./types";
 import Navbar from "./components/Navbar/Navbar";
 import Card from "./components/Card/Card";
+import { useState } from "react";
+import useFilter from "./hooks/useFilter";
+import GridLayout from "./layouts/GridLayout/GridLayout";
 
 function App() {
-  const { data } = useQuery(GET_IMAGES);
+  const { data } = useQuery<ImagesResponseType>(GET_IMAGES);
+  const [query, setQuery] = useState<string>("");
+  const filteredImages = useFilter(query, data?.images?.edges);
+
   return (
     <>
-      <Navbar />
-      <div className={styles.cardsContainer}>
-        {data?.images?.edges.map(({ node }: { node: ImageData }) => (
-          <Card
-            id={node.id}
-            title={node.title}
-            price={node.price}
-            picture={node.picture}
-            liked={node.liked}
-            likesCount={node.likesCount}
-            author={node.author}
-          />
+      <Navbar query={query} setQuery={setQuery} />
+      <GridLayout
+        className={styles.gridLayout}
+        elements={filteredImages.map(({ node }: { node: ImageData }) => (
+          <Card imageData={node} />
         ))}
-      </div>
+      />
     </>
   );
 }

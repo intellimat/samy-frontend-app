@@ -3,11 +3,15 @@ import styles from "./navbar.module.css";
 import Searchbar from "../Searchbar/Searchbar";
 import SamyLogo from "../../assets/SAMY_logo.svg?react";
 
-const Navbar: React.FC = () => {
+interface Props {
+  query: string;
+  setQuery: (query: string) => void;
+}
+const Navbar: React.FC<Props> = ({ query, setQuery }) => {
   return (
     <nav className={styles.navbar}>
       <SamyLogo />
-      <Searchbar query={""} setQuery={() => {}} />
+      <Searchbar query={query} setQuery={setQuery} />
     </nav>
   );
 };
