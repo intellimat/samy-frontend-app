@@ -1,26 +1,33 @@
 import { useQuery } from "@apollo/client";
-import "./App.css";
+import styles from "./App.module.css";
 import { GET_IMAGES } from "./services/queries";
-import { ImageData } from "./types";
+import { ImageData, ImagesResponseType } from "./types";
 import Navbar from "./components/Navbar/Navbar";
+import Card from "./components/Card/Card";
+import { useState } from "react";
+import useFilter from "./hooks/useFilter";
+import GridLayout from "./layouts/GridLayout/GridLayout";
+import { useMutateData } from "./hooks/useMutateData";
 
 function App() {
-  const { data } = useQuery(GET_IMAGES);
+  const [query, setQuery] = useState<string>("");
+  const { data } = useQuery<ImagesResponseType>(GET_IMAGES);
+  const filteredImages = useFilter(query, data?.images?.edges);
+  const { sendImageLikeRequest } = useMutateData();
+
   return (
     <>
-      <Navbar />
-      <div>
-        {data?.images?.edges.map(({ node }: { node: ImageData }) => (
-          <div key={node.id}>
-            <h3>{node.title}</h3>
-            <img src={node.picture} alt={node.title} />
-            <p>Price: ${node.price}</p>
-            <p>Likes: {node.likesCount}</p>
-            <p>Liked: {node.liked ? "Yes" : "No"}</p>
-            <p>Author: {node.author}</p>
-          </div>
+      <Navbar query={query} setQuery={setQuery} />
+      <GridLayout
+        className={styles.gridLayout}
+        elements={filteredImages.map(({ node }: { node: ImageData }) => (
+          <Card
+            key={node.id}
+            imageData={node}
+            onLikeClick={sendImageLikeRequest}
+          />
         ))}
-      </div>
+      />
     </>
   );
 }

@@ -5,13 +5,13 @@ export const GET_IMAGES = gql`
     images {
       edges {
         node {
+          id
           title
           price
           picture
           liked
           likesCount
           author
-          id
         }
       }
     }
