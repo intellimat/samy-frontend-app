@@ -7,11 +7,13 @@ import Card from "./components/Card/Card";
 import { useState } from "react";
 import useFilter from "./hooks/useFilter";
 import GridLayout from "./layouts/GridLayout/GridLayout";
+import { useMutateData } from "./hooks/useMutateData";
 
 function App() {
-  const { data } = useQuery<ImagesResponseType>(GET_IMAGES);
   const [query, setQuery] = useState<string>("");
+  const { data } = useQuery<ImagesResponseType>(GET_IMAGES);
   const filteredImages = useFilter(query, data?.images?.edges);
+  const { sendImageLikeRequest } = useMutateData();
 
   return (
     <>
@@ -19,7 +21,11 @@ function App() {
       <GridLayout
         className={styles.gridLayout}
         elements={filteredImages.map(({ node }: { node: ImageData }) => (
-          <Card key={node.id} imageData={node} />
+          <Card
+            key={node.id}
+            imageData={node}
+            onLikeClick={sendImageLikeRequest}
+          />
         ))}
       />
     </>
