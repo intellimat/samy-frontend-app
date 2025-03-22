@@ -11,13 +11,25 @@ import { useMutateData } from "./hooks/useMutateData";
 
 function App() {
   const [query, setQuery] = useState<string>("");
-  const { data } = useQuery<ImagesResponseType>(GET_IMAGES);
+  const { data, fetchMore } = useQuery<ImagesResponseType>(GET_IMAGES, {
+    variables: { first: 10 },
+    notifyOnNetworkStatusChange: true,
+  });
   const filteredImages = useFilter(query, data?.images?.edges);
   const { sendImageLikeRequest } = useMutateData();
+
+  const loadMore = () => {
+    if (data?.images?.pageInfo?.hasNextPage) {
+      fetchMore({
+        variables: { after: data.images.pageInfo.endCursor },
+      });
+    }
+  };
 
   return (
     <>
       <Navbar query={query} setQuery={setQuery} />
+      <button onClick={loadMore}> Load More</button>
       <GridLayout
         className={styles.gridLayout}
         elements={filteredImages.map(({ node }: { node: ImageData }) => (

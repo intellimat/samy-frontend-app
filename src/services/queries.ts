@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_IMAGES = gql`
-  query GetImages {
-    images {
+  query GetImages($after: String, $first: Int = 10) {
+    images(after: $after, first: $first) {
       edges {
         node {
           id
@@ -13,6 +13,12 @@ export const GET_IMAGES = gql`
           likesCount
           author
         }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
       }
     }
   }
