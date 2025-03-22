@@ -11,5 +11,11 @@ export interface ImageData {
 export interface ImagesResponseType {
   images: {
     edges: { node: ImageData }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor: string;
+    };
   };
 }

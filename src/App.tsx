@@ -8,12 +8,30 @@ import { useState } from "react";
 import useFilter from "./hooks/useFilter";
 import GridLayout from "./layouts/GridLayout/GridLayout";
 import { useMutateData } from "./hooks/useMutateData";
+import { useInfiniteScroll } from "./hooks/useInfiniteScroll";
 
 function App() {
   const [query, setQuery] = useState<string>("");
-  const { data } = useQuery<ImagesResponseType>(GET_IMAGES);
+  const [isFirstLoading, setIsFirstLoading] = useState(true); // prevents calling fetchMore on first render
+
+  const { data, loading, fetchMore } = useQuery<ImagesResponseType>(
+    GET_IMAGES,
+    {
+      variables: { first: 10 },
+      notifyOnNetworkStatusChange: true,
+      onCompleted: () => setIsFirstLoading(false), // Mark first load as done
+    }
+  );
   const filteredImages = useFilter(query, data?.images?.edges);
   const { sendImageLikeRequest } = useMutateData();
+
+  // Using the custom hook for infinite scrolling
+  const { bottomElementRef } = useInfiniteScroll({
+    hasNextPage: data?.images?.pageInfo?.hasNextPage,
+    isLoading: loading || isFirstLoading,
+    fetchMore,
+    endCursor: data?.images?.pageInfo?.endCursor || null,
+  });
 
   return (
     <>
@@ -28,6 +46,9 @@ function App() {
           />
         ))}
       />
+      {/* Empty div at the bottom to act as the trigger for intersection observer */}
+      <div ref={bottomElementRef}></div>
+      {loading && <div>Loading...</div>}
     </>
   );
 }
