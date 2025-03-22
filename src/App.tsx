@@ -8,28 +8,34 @@ import { useState } from "react";
 import useFilter from "./hooks/useFilter";
 import GridLayout from "./layouts/GridLayout/GridLayout";
 import { useMutateData } from "./hooks/useMutateData";
+import { useInfiniteScroll } from "./hooks/useInfiniteScroll";
 
 function App() {
   const [query, setQuery] = useState<string>("");
-  const { data, fetchMore } = useQuery<ImagesResponseType>(GET_IMAGES, {
-    variables: { first: 10 },
-    notifyOnNetworkStatusChange: true,
-  });
+  const [isFirstLoading, setIsFirstLoading] = useState(true); // prevents calling fetchMore on first render
+
+  const { data, loading, fetchMore } = useQuery<ImagesResponseType>(
+    GET_IMAGES,
+    {
+      variables: { first: 10 },
+      notifyOnNetworkStatusChange: true,
+      onCompleted: () => setIsFirstLoading(false), // Mark first load as done
+    }
+  );
   const filteredImages = useFilter(query, data?.images?.edges);
   const { sendImageLikeRequest } = useMutateData();
 
-  const loadMore = () => {
-    if (data?.images?.pageInfo?.hasNextPage) {
-      fetchMore({
-        variables: { after: data.images.pageInfo.endCursor },
-      });
-    }
-  };
+  // Using the custom hook for infinite scrolling
+  const { bottomElementRef } = useInfiniteScroll({
+    hasNextPage: data?.images?.pageInfo?.hasNextPage,
+    isLoading: loading || isFirstLoading,
+    fetchMore,
+    endCursor: data?.images?.pageInfo?.endCursor || null,
+  });
 
   return (
     <>
       <Navbar query={query} setQuery={setQuery} />
-      <button onClick={loadMore}> Load More</button>
       <GridLayout
         className={styles.gridLayout}
         elements={filteredImages.map(({ node }: { node: ImageData }) => (
@@ -40,6 +46,9 @@ function App() {
           />
         ))}
       />
+      {/* Empty div at the bottom to act as the trigger for intersection observer */}
+      <div ref={bottomElementRef}></div>
+      {loading && <div>Loading...</div>}
     </>
   );
 }
