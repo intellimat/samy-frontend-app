@@ -11,7 +11,11 @@ const Navbar: React.FC<Props> = ({ query, setQuery }) => {
   return (
     <nav className={styles.navbar}>
       <SamyLogo />
-      <Searchbar query={query} setQuery={setQuery} />
+      <Searchbar
+        query={query}
+        setQuery={setQuery}
+        className={styles.searchbar}
+      />
     </nav>
   );
 };
