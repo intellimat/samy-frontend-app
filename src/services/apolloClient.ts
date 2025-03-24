@@ -8,10 +8,17 @@ const client = new ApolloClient({
         fields: {
           images: {
             keyArgs: false, // Treat all pages as a single list
-            merge(existing = {}, incoming) {
+            merge(existing = {}, incoming, { args }) {
+              // If it's a new search (title changed), reset the list
+              if (!existing || existing.title !== args?.title) {
+                return { ...incoming, title: args?.title };
+              }
+
+              // Otherwise, append results for pagination
               return {
                 ...incoming,
-                edges: [...(existing.edges || []), ...incoming.edges], // Append new data
+                title: args?.title,
+                edges: [...(existing.edges || []), ...incoming.edges], // Append new pages
               };
             },
           },

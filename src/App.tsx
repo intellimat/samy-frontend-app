@@ -4,50 +4,44 @@ import { GET_IMAGES } from "./services/queries";
 import { ImageData, ImagesResponseType } from "./types";
 import Navbar from "./components/Navbar/Navbar";
 import Card from "./components/Card/Card";
-import { useState } from "react";
-import useFilter from "./hooks/useFilter";
+import { useMemo, useState } from "react";
 import GridLayout from "./layouts/GridLayout/GridLayout";
 import { useMutateData } from "./hooks/useMutateData";
-import { useInfiniteScroll } from "./hooks/useInfiniteScroll";
+import useDebounce from "./hooks/useDebounce";
 
 function App() {
   const [query, setQuery] = useState<string>("");
+  const debouncedQuery = useDebounce(query, 1000);
   const [isFirstLoading, setIsFirstLoading] = useState(true); // prevents calling fetchMore on first render
 
-  const { data, loading, fetchMore } = useQuery<ImagesResponseType>(
+  const { data, loading /*, fetchMore*/ } = useQuery<ImagesResponseType>(
     GET_IMAGES,
     {
-      variables: { first: 10 },
+      variables: { first: 10, title: debouncedQuery },
+      fetchPolicy: "network-only", // Always fetch from the network
       notifyOnNetworkStatusChange: true,
-      onCompleted: () => setIsFirstLoading(false), // Mark first load as done
+      onCompleted: () => setIsFirstLoading(false),
     }
   );
-  const filteredImages = useFilter(query, data?.images?.edges);
-  const { sendImageLikeRequest } = useMutateData();
+  const listOfImages = useMemo(() => data?.images?.edges || [], [data]);
 
-  // Using the custom hook for infinite scrolling
-  const { bottomElementRef } = useInfiniteScroll({
-    hasNextPage: data?.images?.pageInfo?.hasNextPage,
-    isLoading: loading || isFirstLoading,
-    fetchMore,
-    endCursor: data?.images?.pageInfo?.endCursor || null,
-  });
+  const { sendImageLikeRequest } = useMutateData();
 
   return (
     <>
       <Navbar query={query} setQuery={setQuery} />
-      <GridLayout
-        className={styles.gridLayout}
-        elements={filteredImages.map(({ node }: { node: ImageData }) => (
-          <Card
-            key={node.id}
-            imageData={node}
-            onLikeClick={sendImageLikeRequest}
-          />
-        ))}
-      />
-      {/* Empty div at the bottom to act as the trigger for intersection observer */}
-      <div ref={bottomElementRef}></div>
+      {!isFirstLoading && listOfImages.length > 0 && (
+        <GridLayout
+          className={styles.gridLayout}
+          elements={listOfImages.map(({ node }: { node: ImageData }) => (
+            <Card
+              key={node.id}
+              imageData={node}
+              onLikeClick={sendImageLikeRequest}
+            />
+          ))}
+        />
+      )}
       {loading && <div>Loading...</div>}
     </>
   );
