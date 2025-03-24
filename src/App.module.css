@@ -1,4 +1,7 @@
-.gridLayout {
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
   padding: 48px;
   background-color: #f6f6f6;
 }
