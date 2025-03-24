@@ -5,15 +5,16 @@ import SearchIcon from "../../assets/icons/lens.svg?react";
 interface Props {
   query: string;
   setQuery: (query: string) => void;
+  className?: string;
 }
 
-const Searchbar: React.FC<Props> = ({ query, setQuery }) => {
+const Searchbar: React.FC<Props> = ({ query, setQuery, className }) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
 
   return (
-    <div className={styles.inputWrapper}>
+    <div className={`${styles.inputWrapper} ${className || ""}`}>
       <SearchIcon />
       <input
         type="text"

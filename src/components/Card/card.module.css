@@ -1,8 +1,33 @@
 .card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  bottom: 0;
+  right: 0;
 }
 
-.imageContainer {
-  position: relative;
+.userInteraction {
+  position: absolute;
+  right: 8px;
+  bottom: 80px;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+.forwardedContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.likesContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .price {
@@ -12,20 +37,10 @@
   padding: 6px;
 }
 
-.likesContainer {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: white;
-  bottom: 0;
-  right: 0;
-  margin: 12px;
-}
-
 .information {
   border: 1px solid #d3d3d3;
-  padding: 18px;
+  padding: 14px;
+  height: 40px;
 }
 .title {
   text-align: center;
@@ -58,4 +73,44 @@
   mask: var(--mask);
 
   vertical-align: top; /* remove blank space at the bottom of the image */
+}
+
+.forwardIcon path {
+  fill: white;
+}
+
+@media (max-width: 600px) {
+  .userInteraction {
+    position: static; /* Remove absolute positioning */
+    flex-direction: row;
+    color: black;
+    border-bottom: 1px solid #d3d3d3;
+    border-right: 1px solid #d3d3d3;
+    border-left: 1px solid #d3d3d3;
+  }
+
+  .likesContainer {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    justify-content: center;
+    flex-direction: row-reverse;
+    align-items: center;
+    height: auto;
+    border-right: 1px solid #d3d3d3;
+    flex: 1;
+    gap: 6px;
+  }
+
+  .forwardedContainer {
+    flex: 1;
+    flex-direction: row-reverse;
+    align-items: center;
+    height: auto;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .forwardIcon path {
+    fill: black;
+  }
 }
