@@ -1,5 +1,16 @@
-describe("Example", () => {
-  test("2+2 should be 4", () => {
-    expect(2 + 2).toBe(4);
+import { render, screen } from "@testing-library/react";
+import App from "../App";
+import { MockedProvider } from "@apollo/client/testing";
+import { mocks } from "./mocks";
+
+describe("App", () => {
+  test("should display a navbar", () => {
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <App />
+      </MockedProvider>
+    );
+    const navbar = screen.getByRole("navigation");
+    expect(navbar).toBeInTheDocument();
   });
 });
