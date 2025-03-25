@@ -6,7 +6,7 @@ import { mocks } from "./mocks";
 describe("App", () => {
   test("should display a navbar", () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <App />
       </MockedProvider>
     );
