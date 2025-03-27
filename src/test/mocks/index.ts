@@ -2,27 +2,46 @@ import { LIKE_IMAGE } from "../../services/mutations";
 import { GET_IMAGES } from "../../services/queries";
 import { ImagesResponseType } from "../../types";
 
-const mockResponse: ImagesResponseType = {
-  images: {
-    edges: [
-      {
-        node: {
-          id: "1",
-          title: "Sample Image",
-          price: 100,
-          picture: "https://example.com/image.jpg",
-          liked: false,
-          likesCount: 10,
-          author: "John Doe",
+const getImaagesMock = {
+  request: {
+    query: GET_IMAGES,
+    variables: { first: 10, title: "" }, // Default case
+  },
+  result: {
+    data: {
+      images: {
+        edges: [
+          {
+            node: {
+              id: "1",
+              title: "Sample Image",
+              price: 100,
+              picture: "https://example.com/image.jpg",
+              liked: false,
+              likesCount: 10,
+              author: "John Doe",
+            },
+          },
+          {
+            node: {
+              id: "2",
+              title: "Sample Image 2",
+              price: 100,
+              picture: "https://example.com/image.jpg",
+              liked: false,
+              likesCount: 0,
+              author: "Lob Bed",
+            },
+          },
+        ],
+        pageInfo: {
+          endCursor: "2",
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: "1",
         },
       },
-    ],
-    pageInfo: {
-      endCursor: "2",
-      hasNextPage: true,
-      hasPreviousPage: false,
-      startCursor: "1",
-    },
+    } as ImagesResponseType,
   },
 };
 
@@ -32,17 +51,15 @@ const likeImageMock = {
     variables: {
       input: {
         imageId: "1",
-        clientMutationId: expect.any(String), // nanoid() generates a random string
+        clientMutationId: "mockedId",
       },
     },
   },
   result: {
     data: {
       likeImage: {
-        __typename: "LikeImagePayload",
-        clientMutationId: "random-id",
+        clientMutationId: "mockedId",
         image: {
-          __typename: "Image",
           id: "1",
           liked: true,
           likesCount: 11, // Incremented like count
@@ -52,15 +69,4 @@ const likeImageMock = {
   },
 };
 
-export const mocks = [
-  {
-    request: {
-      query: GET_IMAGES,
-      variables: { first: 10, title: "" }, // Default case
-    },
-    result: {
-      data: mockResponse,
-    },
-  },
-  likeImageMock,
-];
+export const mocks = [getImaagesMock, likeImageMock];

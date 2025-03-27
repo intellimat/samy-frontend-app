@@ -13,9 +13,9 @@ interface Props {
 const Card: React.FC<Props> = ({ imageData, onLikeClick }) => {
   const { title, price, author, picture, liked, likesCount } = imageData;
   return (
-    <div className={styles.card}>
+    <div className={styles.card} data-testid="card">
       <div className={styles.price}>{price}€</div>
-      <img src={picture} className={styles.picture} alt={title + " image"} />
+      <img src={picture} className={styles.picture} alt={title} />
       <div className={styles.information}>
         <div className={styles.title}> {title} </div>
         <div className={styles.subtitle}>
@@ -28,12 +28,14 @@ const Card: React.FC<Props> = ({ imageData, onLikeClick }) => {
           {liked ? (
             <FullHeart
               role="button"
+              title={"heart-icon-" + imageData.id}
               cursor={"pointer"}
               onClick={() => onLikeClick(imageData.id)}
             />
           ) : (
             <EmptyHeart
               role="button"
+              title={"heart-icon-" + imageData.id}
               cursor={"pointer"}
               onClick={() => onLikeClick(imageData.id)}
             />
