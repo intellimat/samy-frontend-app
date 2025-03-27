@@ -1,54 +1,97 @@
-# React + TypeScript + Vite
+# Samy web challenge  
+React app that shows Samy images.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Requirements  
+- node.js >= 22.14
+- npm >= 10.9.2
+- latest Google Chrome Browser
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Clone the repo  
+`git clone https://github.com/intellimat/samy-frontend-app.git`
 
-## Expanding the ESLint configuration
+Go to _samy-frontend-app_ folder  
+`cd samy-frontend-app`
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+and run  
+`npm install`
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Run the project  
+`npm run dev`
+
+## Test
+
+The app has been tested using _vitest_ and _React Testing Library_.  
+You can run the tests by entering  
+`npm test`
+
+You can run the test coverage by entering  
+`npm run coverage`
+
+Or run see tests outcome on your browser by typing  
+`npm run test-ui`
+
+Currently implemented tests:  
+ ✓ _src/test/app.test.tsx (5 tests)_  
+   ✓ _App > should display a navbar_  
+   ✓ _App > should display a searchbar_  
+   ✓ _App > should get new data when typing on the searchbar_  
+   ✓ _App > should display as many cards as the cards returned by the service_  
+   ✓ _App > should mutate the card image on heart button click_  
+
+## Tech stack  
+- vite
+- react 19
+- apollo client
+- vitest
+- react testing library
+
+## Project structure (/src)  
+```
+.
+├── App.module.css
+├── App.tsx
+├── assets
+│   ├── icons
+│   │   ├── arrow-right-forward.svg
+│   │   ├── empty-heart.svg
+│   │   ├── full-heart.svg
+│   │   └── lens.svg
+│   └── SAMY_logo.svg
+├── components
+│   ├── Card
+│   │   ├── card.module.css
+│   │   └── Card.tsx
+│   ├── Navbar
+│   │   ├── navbar.module.css
+│   │   └── Navbar.tsx
+│   └── Searchbar
+│       ├── searchbar.module.css
+│       └── Searchbar.tsx
+├── hooks
+│   ├── useDebounce.ts
+│   └── useMutateData.ts
+├── index.css
+├── main.tsx
+├── services
+│   ├── apolloClient.ts
+│   ├── mutations.ts
+│   └── queries.ts
+├── test
+│   ├── app.test.tsx
+│   └── mocks
+│       └── index.ts
+├── types
+│   └── index.ts
+└── vite-env.d.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Services (API)  
+- Through _useQuery()_ we fetch data in _App.tsx_
+- Through _useMutation()_ in _useMutateData()_ we execute mutation (e.g user likes image)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Custom Hooks
+- useDebounce.ts => we delayed the API call when the user types on the serachbar
+- useMutateData.ts => we handle the mutation logic (cache managing is done here)
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
